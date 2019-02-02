@@ -1,0 +1,5 @@
+Nombre Mejor Cliente = 
+CALCULATE( 
+    SELECTEDVALUE(Customer[Customer Name]),
+        TOPN(1, ALL(Customer[Customer Name]), [Total Sales],DESC)
+)
