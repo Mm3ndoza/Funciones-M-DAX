@@ -10,6 +10,7 @@ let fn = (Valor as text) as duration =>
         Dias = Text.From(Number.IntegerDivide(Number.From(Horas),24)),
         HorasFinal = Text.From(Number.Round(Number.Mod(Number.From(Horas) / 24,1) * 24,0)),
         Union = Duration.From(Dias & "." & HorasFinal & ":" & Text.AfterDelimiter(Source,":"))
+        HorasFinal = Text.From(
     in
         Union
 in
