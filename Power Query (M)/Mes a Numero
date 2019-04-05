@@ -1,0 +1,15 @@
+// Convierte una cadena de mes a su numero (requiere al menos 2 caracteres para la conversion); ejemplo:
+// "Ene" = 1, "FEBRE" = 2, "Diciemb" = 12, "ma" = Error
+
+let fn = (Mes as text)=> 
+    if Text.Length(Mes) < 3 then [Error] else
+    let
+        Source = List.Transform({1..12}, each Text.Start(Date.MonthName(#date(2019,_,1)),Text.Length(Mes))),
+        tabla = Table.FromList(Source, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+        Id = Table.AddIndexColumn(tabla, "Id", 1, 1),
+        Comparador = Table.FromColumns({{Text.Lower(Text.Start(Mes,Text.Length(Text.Lower(Mes))}}),
+        Combinar = Table.NestedJoin(Comparador, {"Column1"}, Id, {"Column1"}, "Custom1", JoinKind.LeftOuter),
+        ExtraerId = Table.ExpandTableColumn(Combinar, "Custom1", {"Id"}, {"Id"})[Id]{0}
+    in
+        ExtraerId
+in fn
