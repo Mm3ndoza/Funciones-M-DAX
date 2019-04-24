@@ -1,0 +1,21 @@
+/* equivalente a la funcion SIFECHA de Excel. A para calcular Años, M para Meses y D para dias.
+   Si se deja en blanco el segundo parametro calcula sobre de la fecha actual. */
+let fn = (Fecha as date, optional Fecha2 as date, optional Tipo as text, optional Redondear as number) =>
+    let
+        Duracion = 
+        if Fecha2 = null then 
+            Duration.TotalDays( Duration.From( Date.From(DateTime.FixedLocalNow()) - Fecha) ) + 1 else
+            Duration.TotalDays( Duration.From( Fecha2 - Fecha) ),
+        Calculo = 
+            if Tipo = "A" then
+                Duracion / 365.25
+            else if Tipo = "M" then
+                Duracion / 30.417
+            else if Tipo = "D" then
+                Duracion
+            else 
+                Duracion,
+        Redondeo = if Redondear = null then Calculo else Number.RoundDown(Calculo, Redondear)
+    in 
+        Redondeo
+in fn
