@@ -1,0 +1,30 @@
+let fn = (Tabla as table, Fila1 as number, Fila2 as number, AntesDe as number, Separador as text) as any =>
+    let
+        Origen = 
+        Table.ExpandTableColumn(
+            Table.NestedJoin( 
+                Record.ToTable(Tabla{Fila1 - 1}), "Name", 
+                Record.ToTable(Tabla{Fila2 - 1}), "Name", 
+                "Col" 
+            ), "Col", {"Value"}, {"Value2"}
+        ),
+        Combinada = Table.AddColumn(Origen, "Combinada", each Text.Combine({Text.Trim([Value]), Text.Trim([Value2])}, Separador), type text),
+        QuitarColumnas = 
+        Table.ToRecords( 
+            Table.Pivot(
+                Table.RemoveColumns(
+                    Combinada,{"Value", "Value2"}
+                ), List.Distinct(Combinada[Name]), 
+            "Name", "Combinada"
+            ) 
+        ),
+        Insertar = 
+        Table.RemoveRows(
+            Table.RemoveRows(
+                Table.InsertRows(Tabla, AntesDe - 1,QuitarColumnas), 
+                Fila1
+            ),Fila2 - 1
+        )
+    in
+        Insertar
+in fn
